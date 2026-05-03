@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>UPI Payment</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #111;
+            color: white;
+            text-align: center;
+            padding-top: 50px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 250px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #00e5ff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>💸 Send Money via UPI</h2>
+
+<form action="/upi/pay" method="post">
+    <input type="text" name="upi" placeholder="Receiver UPI ID" required><br>
+    <input type="number" name="amount" placeholder="Amount" required><br>
+    <button type="submit">Send</button>
+</form>
+
+<p th:text="${msg}"></p>
+
+</body>
+</html>

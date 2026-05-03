@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="navbar">
+
+    <div class="navbar">
+        <div class="logo">🏦 MyBank</div>
+
+        <div class="links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/deposit">Deposit</a>
+            <a href="/withdraw">Withdraw</a>
+            <a href="/transfer">Transfer</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    color:white;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    color:#00e5ff;
+}
+
+.links a{
+    color:white;
+    margin:0 12px;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.links a:hover{
+    color:#00e5ff;
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bank Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #0d47a1;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* WELCOME */
+        .welcome {
+            padding: 15px 20px;
+            font-size: 18px;
+        }
+
+        /* MESSAGE */
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            width: 300px;
+            margin: 10px auto;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            width: 350px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .amount {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+    </style>
+	<style>
+	/* FLOATING BUTTON */
+	.floating-btn{
+	    position: fixed;
+	    bottom: 25px;
+	    right: 25px;
+	    width: 60px;
+	    height: 60px;
+	    background: #0d47a1;
+	    color: white;
+	    border-radius: 50%;
+	    font-size: 26px;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    cursor: pointer;
+	    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+	    z-index: 999;
+	}
+
+	/* POPUP BOX */
+	.widget-box{
+	    position: fixed;
+	    bottom: 100px;
+	    right: 25px;
+	    width: 320px;
+	    background: white;
+	    border-radius: 12px;
+	    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+	    padding: 15px;
+	    display: none;
+	    z-index: 1000;
+	}
+
+	/* TABS */
+	.tabs{
+	    display: flex;
+	    justify-content: space-between;
+	    margin-bottom: 10px;
+	}
+
+	.tabs button{
+	    width: 50%;
+	    padding: 8px;
+	    border: none;
+	    cursor: pointer;
+	    background: #0d47a1;
+	    color: white;
+	}
+
+	/* CONTENT */
+	.tab-content p{
+	    font-size: 14px;
+	    margin-bottom: 10px;
+	}
+
+	/* FORM */
+	.widget-box input,
+	.widget-box textarea{
+	    width: 100%;
+	    margin-bottom: 8px;
+	    padding: 8px;
+	}
+
+	.widget-box button{
+	    width: 100%;
+	    background: #0d47a1;
+	    color: white;
+	    border: none;
+	    padding: 8px;
+	    cursor: pointer;
+	}
+	</style>
+</head>
+
+<body>
+	
+<!-- NAVBAR -->
+<div class="navbar">
+    <div>🏦 Bank System</div>
+
+    <div class="nav-links">
+		<a href="/loan">Apply Loan</a>
+        <a href="/transfer">Transfer</a>
+        <a href="/deposit">Deposit</a>
+        <a href="/withdraw">Withdraw</a>
+		<a href="/card">💳 My Virtual Card</a>
+		<a href="/upi">💸 UPI Transfer</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<!-- WELCOME -->
+<div class="welcome">
+    👋 Welcome
+    <b th:text="${user.role == 'ADMIN' ? 'Admin' : user.name}"></b>
+</div>
+
+<!-- ✅ SUCCESS MESSAGES -->
+<div class="message success"
+     th:if="${param.success != null and param.success.contains('deposit')}">
+    ✅ Deposit Successful
+</div>
+
+<div class="message success"
+     th:if="${param.success != null and param.success.contains('withdraw')}">
+    ✅ Withdrawal Successful
+</div>
+
+<div class="message success"
+     th:if="${param.success != null and param.success.contains('transfer')}">
+    ✅ Transfer Successful
+</div>
+
+<!-- ❌ ERROR MESSAGES -->
+<div class="message error"
+     th:if="${param.error != null and param.error.contains('InsufficientBalance')}">
+    ❌ Insufficient Balance
+</div>
+
+<div class="message error"
+     th:if="${param.error != null and param.error.contains('AccountNotFound')}">
+    ❌ Invalid Account Number
+</div>
+
+<div class="message error"
+     th:if="${param.error != null and param.error.contains('NoAccount')}">
+    ❌ Account Not Found
+</div>
+
+<!-- ACCOUNT CARD -->
+<div class="card">
+
+    <h3>Account Details</h3>
+
+    <div th:if="${account != null}">
+        <p>Account Number</p>
+        <div class="amount" th:text="${account.accountNumber}"></div>
+
+        <p style="margin-top:10px;">Balance</p>
+        <div class="amount" style="color:green;" th:text="${account.balance}"></div>
+    </div>
+
+    <div th:if="${account == null}" class="message error">
+        ❌ Account Not Found
+    </div>
+
+</div>
+<!-- 🔥 FLOATING BUTTON -->
+<div class="floating-btn" onclick="toggleWidget()">
+    💬
+</div>
+
+<!-- 🔥 POPUP BOX -->
+<div class="widget-box" id="widgetBox">
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button onclick="showTab('faq')">FAQ</button>
+        <button onclick="showTab('contact')">Contact</button>
+    </div>
+
+    <!-- FAQ SECTION -->
+    <div id="faq" class="tab-content">
+        <h4>FAQ</h4>
+
+        <p><b>How to transfer money?</b><br>Use transfer page and enter account number.</p>
+
+        <p><b>Loan approval time?</b><br>Instant or within few minutes.</p>
+
+        <p><b>UPI transfer failed?</b><br>Check correct UPI ID.</p>
+    </div>
+
+    <!-- CONTACT SECTION -->
+    <div id="contact" class="tab-content" style="display:none;">
+        <h4>Contact Us</h4>
+
+        <form action="admin/contact/save" method="post">
+            <input type="text" name="name" placeholder="Your Name" required>
+
+            <input type="email" name="email" placeholder="Email" required>
+
+            <textarea name="message" placeholder="Message" required></textarea>
+
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+</div>
+<script>
+function toggleWidget(){
+    let box = document.getElementById("widgetBox");
+
+    if(box.style.display === "block"){
+        box.style.display = "none";
+    } else {
+        box.style.display = "block";
+    }
+}
+
+function showTab(tab){
+    document.getElementById("faq").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+
+    document.getElementById(tab).style.display = "block";
+}
+</script>
+
+</body>
+</html>

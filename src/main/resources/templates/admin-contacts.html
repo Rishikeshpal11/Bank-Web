@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contact Inbox</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background:#f4f7fb;
+        }
+
+        .box{
+            width:80%;
+            margin:20px auto;
+        }
+
+        .card{
+            background:white;
+            padding:15px;
+            margin-bottom:10px;
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .name{
+            font-weight:bold;
+            color:#0d47a1;
+        }
+
+        .msg{
+            margin-top:5px;
+        }
+
+        .btn{
+            background:red;
+            color:white;
+            padding:5px 10px;
+            text-decoration:none;
+            border-radius:5px;
+            float:right;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">📩 Contact Inbox (Admin)</h2>
+
+<div class="box">
+
+    <div th:each="c : ${contacts}" class="card">
+
+        <a th:href="@{'/admin/delete-contact/' + ${c.id}}" class="btn">Delete</a>
+
+        <div class="name" th:text="${c.name}"></div>
+
+        <div th:text="${c.email}"></div>
+
+        <div class="msg" th:text="${c.message}"></div>
+
+        <small th:text="${c.date}"></small>
+
+    </div>
+
+</div>
+
+</body>
+</html>

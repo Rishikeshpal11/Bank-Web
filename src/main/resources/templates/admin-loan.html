@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Loan</title>
+</head>
+
+<body>
+
+<h2>Loan Requests</h2>
+
+<table border="1">
+
+    <tr>
+        <th>User</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="l : ${loans}">
+        <td th:text="${l.user.name}"></td>
+        <td th:text="${l.amount}"></td>
+        <td th:text="${l.status}"></td>
+
+        <td>
+            <a th:href="@{/loan/approve/{id}(id=${l.id})}">Approve</a>
+            |
+            <a th:href="@{/loan/reject/{id}(id=${l.id})}">Reject</a>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>

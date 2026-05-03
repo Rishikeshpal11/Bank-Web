@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Loan</title>
+</head>
+
+<body>
+
+<h2>Apply Loan</h2>
+
+<form action="/loan/apply" method="post">
+    <input type="number" name="amount" placeholder="Enter Amount" required>
+    <button type="submit">Apply</button>
+</form>
+
+<h3>Your Loans</h3>
+
+<table border="1">
+    <tr>
+        <th>Amount</th>
+        <th>Status</th>
+    </tr>
+
+    <tr th:each="l : ${loans}">
+        <td th:text="${l.amount}"></td>
+        <td th:text="${l.status}"></td>
+    </tr>
+
+</table>
+
+</body>
+</html>

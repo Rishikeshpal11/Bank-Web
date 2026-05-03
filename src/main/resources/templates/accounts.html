@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Accounts</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .navbar {
+            background: #0d47a1;
+            color: white;
+            padding: 15px 25px;
+            font-size: 18px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        h2 {
+            color: #0d47a1;
+            margin-bottom: 20px;
+        }
+
+        .table-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f1f5ff;
+        }
+
+        /* BADGES */
+        .balance {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .account {
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .user {
+            font-weight: bold;
+        }
+
+        .email {
+            color: #555;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    💳 Accounts Management
+</div>
+
+<div class="container">
+
+    <h2>All Bank Accounts</h2>
+
+    <div class="table-box">
+
+        <table>
+            <tr>
+                <th>Account No</th>
+                <th>Balance</th>
+                <th>User Name</th>
+                <th>Email</th>
+            </tr>
+
+            <tr th:each="acc : ${accounts}">
+
+                <td class="account" th:text="${acc.accountNumber}"></td>
+
+                <td class="balance" th:text="${acc.balance}"></td>
+
+                <td class="user" th:text="${acc.user.name}"></td>
+
+                <td class="email" th:text="${acc.user.email}"></td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

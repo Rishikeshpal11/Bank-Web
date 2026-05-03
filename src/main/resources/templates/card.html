@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Virtual Card</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #2c5364);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #00e5ff;
+        }
+
+        .card {
+            width: 380px;
+            height: 220px;
+            border-radius: 20px;
+            padding: 25px;
+
+            background: linear-gradient(45deg, #00e5ff, #0077ff);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .chip {
+            width: 50px;
+            height: 35px;
+            background: gold;
+            border-radius: 8px;
+        }
+
+        .holder {
+            margin-top: 30px;
+            font-size: 18px;
+        }
+
+        .number {
+            font-size: 22px;
+            margin-top: 20px;
+            letter-spacing: 3px;
+        }
+
+        .cvv {
+            margin-top: 15px;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .active {
+            color: #00ff88;
+        }
+
+        .frozen {
+            color: #ff4d4d;
+        }
+
+        a {
+            margin-top: 20px;
+            text-decoration: none;
+            color: yellow;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>💳 My Virtual Card</h2>
+
+<div class="card">
+
+    <div class="chip"></div>
+
+    <!-- SAFE NULL CHECK -->
+    <div class="holder">
+        👤 
+        <span th:text="${card != null && card.user != null ? card.user.name : 'User'}"></span>
+    </div>
+
+    <div class="number" th:text="${card != null ? card.cardNumber : '---- ---- ---- ----'}"></div>
+
+    <div class="cvv">
+        CVV: 
+        <span th:text="${card != null ? card.cvv : '---'}"></span>
+    </div>
+
+    <!-- STATUS -->
+    <div class="status">
+        <span th:if="${card != null && !card.frozen}" class="active">🟢 Active</span>
+        <span th:if="${card != null && card.frozen}" class="frozen">❄ Frozen</span>
+    </div>
+
+</div>
+
+<!-- ACTION -->
+<a href="/card/toggle">🔄 Freeze / Unfreeze Card</a>
+
+</body>
+</html>

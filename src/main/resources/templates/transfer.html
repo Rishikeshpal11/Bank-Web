@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transfer Money</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+        }
+
+        /* ---------------- NAVBAR ---------------- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 15px 30px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00e5ff;
+        }
+
+        .nav-links a {
+            color: white;
+            margin: 0 12px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00e5ff;
+        }
+
+        /* ---------------- CARD ---------------- */
+        .container {
+            height: calc(100vh - 70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            width: 420px;
+            padding: 30px;
+            border-radius: 18px;
+
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        h2 {
+            color: #00ffcc;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+
+            border: none;
+            border-radius: 10px;
+            outline: none;
+
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 15px;
+        }
+
+        input::placeholder {
+            color: #ddd;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(45deg, #00ffcc, #0077ff);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: #ff4d6d;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            color: #00e5ff;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+    <div class="logo">🏦 MyBank</div>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/deposit">Deposit</a>
+        <a href="/withdraw">Withdraw</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div class="container">
+
+    <div class="box">
+
+        <h2>💸 Transfer Money</h2>
+
+        <!-- Sender Account -->
+        <p class="info" th:if="${account != null}">
+            Your Account: <span th:text="${account.accountNumber}"></span>
+        </p>
+
+        <p class="error" th:if="${account == null}">
+            ❌ Account Not Found
+        </p>
+
+        <form action="/account/transfer" method="post">
+
+            <!-- sender account -->
+            <div th:if="${account != null}">
+                <input type="hidden" name="fromAcc" th:value="${account.accountNumber}">
+            </div>
+
+            <!-- receiver account -->
+            <input type="number" name="toAcc" placeholder="Receiver Account Number" required>
+
+            <!-- amount -->
+            <input type="number" name="amount" placeholder="Enter Amount" required>
+
+            <button type="submit">Transfer Money</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
