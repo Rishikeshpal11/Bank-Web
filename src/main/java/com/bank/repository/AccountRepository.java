@@ -1,14 +1,17 @@
 package com.bank.repository;
 
 import com.bank.entity.Account;
-import com.bank.entity.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface AccountRepository extends JpaRepository<Account, Long> {
+import java.util.Optional;
 
-    // ✅ OPTION 1 (BEST)
-    Account findByUser(User user);
+@Repository
+public interface AccountRepository
+        extends JpaRepository<Account, Long> {
 
-    // ✅ OPTION 2 (अगर id से चाहिए)
-    Account findByUser_Id(Long id);
+    Account findByUser_Id(Long userId);
+
+    Optional<Account> findByAccountNumber(String accountNumber);
 }

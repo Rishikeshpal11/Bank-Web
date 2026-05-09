@@ -17,7 +17,7 @@ public class Loan {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Getter Setter
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;

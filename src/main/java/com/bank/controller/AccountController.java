@@ -20,78 +20,130 @@ public class AccountController {
 
     // ================== DEPOSIT ==================
     @PostMapping("/deposit")
-    public String deposit(@RequestParam Long accNo, @RequestParam Double amount) {
+    public String deposit(@RequestParam String accNo,
+                          @RequestParam Double amount) {
 
-        Account acc = accountService.getAccount(accNo);
+        // FIND ACCOUNT BY ACCOUNT NUMBER
+        Account acc = accountService.getByAccountNumber(accNo);
 
+        // ACCOUNT NOT FOUND
         if (acc == null) {
             return "redirect:/dashboard?error=AccountNotFound";
         }
 
+        // INVALID AMOUNT
+        if (amount == null || amount <= 0) {
+            return "redirect:/dashboard?error=InvalidAmount";
+        }
+
+        // UPDATE BALANCE
         acc.setBalance(acc.getBalance() + amount);
+
+        // SAVE
         accountService.save(acc);
 
-        transactionService.saveTransaction("DEPOSIT", amount, accNo);
+        // SAVE TRANSACTION
+        transactionService.saveTransaction(
+                "DEPOSIT",
+                amount,
+                acc.getAccountNumber()
+        );
 
-        return "redirect:/dashboard?success=deposit";
+        return "redirect:/dashboard?success=DepositSuccess";
     }
 
     // ================== WITHDRAW ==================
     @PostMapping("/withdraw")
-    public String withdraw(@RequestParam Long accNo, @RequestParam Double amount) {
+    public String withdraw(@RequestParam String accNo,
+                           @RequestParam Double amount) {
 
-        Account acc = accountService.getAccount(accNo);
+        // FIND ACCOUNT
+        Account acc = accountService.getByAccountNumber(accNo);
 
-        // ❌ account नहीं मिला
+        // ACCOUNT NOT FOUND
         if (acc == null) {
             return "redirect:/dashboard?error=AccountNotFound";
         }
 
-        // ❌ insufficient balance
+        // INVALID AMOUNT
+        if (amount == null || amount <= 0) {
+            return "redirect:/dashboard?error=InvalidAmount";
+        }
+
+        // INSUFFICIENT BALANCE
         if (acc.getBalance() < amount) {
             return "redirect:/dashboard?error=InsufficientBalance";
         }
 
-        // ✅ withdraw
+        // UPDATE BALANCE
         acc.setBalance(acc.getBalance() - amount);
+
+        // SAVE
         accountService.save(acc);
 
-        transactionService.saveTransaction("WITHDRAW", amount, accNo);
+        // SAVE TRANSACTION
+        transactionService.saveTransaction(
+                "WITHDRAW",
+                amount,
+                acc.getAccountNumber()
+        );
 
-        return "redirect:/dashboard?success=withdraw";
+        return "redirect:/dashboard?success=WithdrawSuccess";
     }
 
     // ================== TRANSFER ==================
     @PostMapping("/transfer")
     public String transfer(
-            @RequestParam Long fromAccount,
-            @RequestParam Long toAccount,
+            @RequestParam String fromAcc,
+            @RequestParam String toAcc,
             @RequestParam Double amount) {
 
-        Account from = accountService.getAccount(fromAccount);
-        Account to = accountService.getAccount(toAccount);
+        // FIND SENDER
+        Account from =
+                accountService.getByAccountNumber(fromAcc);
 
-        // ❌ account not found
+        // FIND RECEIVER
+        Account to =
+                accountService.getByAccountNumber(toAcc);
+
+        // ACCOUNT NOT FOUND
         if (from == null || to == null) {
             return "redirect:/transfer?error=AccountNotFound";
         }
 
-        // ❌ insufficient balance
+        // INVALID AMOUNT
+        if (amount == null || amount <= 0) {
+            return "redirect:/transfer?error=InvalidAmount";
+        }
+
+        // INSUFFICIENT BALANCE
         if (from.getBalance() < amount) {
             return "redirect:/transfer?error=InsufficientBalance";
         }
 
-        // ✅ transfer
+        // DEDUCT MONEY
         from.setBalance(from.getBalance() - amount);
+
+        // ADD MONEY
         to.setBalance(to.getBalance() + amount);
 
+        // SAVE BOTH
         accountService.save(from);
         accountService.save(to);
 
-        transactionService.saveTransaction("TRANSFER-OUT", amount, from.getAccountNumber());
-        transactionService.saveTransaction("TRANSFER-IN", amount, to.getAccountNumber());
+        // SAVE TRANSACTIONS
+        transactionService.saveTransaction(
+                "TRANSFER-OUT",
+                amount,
+                from.getAccountNumber()
+        );
 
-        // ✅ SUCCESS → dashboard
-        return "redirect:/dashboard?success=transfer";
+        transactionService.saveTransaction(
+                "TRANSFER-IN",
+                amount,
+                to.getAccountNumber()
+        );
+
+        return "redirect:/dashboard?success=TransferSuccess";
     }
 }

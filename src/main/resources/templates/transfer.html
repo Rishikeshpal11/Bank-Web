@@ -1,38 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Transfer Money</title>
 
     <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
         body {
-            margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
             color: white;
         }
 
-        /* ---------------- NAVBAR ---------------- */
+        /* ================= NAVBAR ================= */
+
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
 
-            padding: 15px 30px;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
+            padding: 18px 40px;
+
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(12px);
+
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         .logo {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             color: #00e5ff;
         }
 
         .nav-links a {
             color: white;
-            margin: 0 12px;
             text-decoration: none;
+            margin-left: 20px;
             font-weight: 500;
             transition: 0.3s;
         }
@@ -41,42 +51,69 @@
             color: #00e5ff;
         }
 
-        /* ---------------- CARD ---------------- */
+        /* ================= MAIN ================= */
+
         .container {
-            height: calc(100vh - 70px);
+            height: calc(100vh - 80px);
+
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .box {
-            width: 420px;
-            padding: 30px;
-            border-radius: 18px;
+            width: 430px;
+
+            padding: 35px;
+            border-radius: 22px;
 
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
+
             border: 1px solid rgba(255,255,255,0.2);
 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+
             text-align: center;
         }
 
         h2 {
+            margin-bottom: 25px;
             color: #00ffcc;
+            font-size: 30px;
+        }
+
+        .info {
             margin-bottom: 20px;
+            color: #00e5ff;
+            font-size: 15px;
+        }
+
+        .error {
+            margin-bottom: 15px;
+            color: #ff4d6d;
+            font-weight: bold;
+        }
+
+        .success {
+            margin-bottom: 15px;
+            color: #00ff99;
+            font-weight: bold;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            margin: 12px 0;
+            padding: 14px;
+
+            margin-top: 15px;
 
             border: none;
-            border-radius: 10px;
             outline: none;
 
-            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+
+            background: rgba(255,255,255,0.18);
+
             color: white;
             font-size: 15px;
         }
@@ -87,39 +124,40 @@
 
         button {
             width: 100%;
-            padding: 12px;
+
+            padding: 14px;
+            margin-top: 22px;
 
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
 
             background: linear-gradient(45deg, #00ffcc, #0077ff);
+
             color: white;
+            font-size: 16px;
             font-weight: bold;
+
             cursor: pointer;
+
             transition: 0.3s;
         }
 
         button:hover {
-            transform: scale(1.05);
+            transform: scale(1.04);
         }
 
-        .error {
-            color: #ff4d6d;
-            margin-bottom: 10px;
-        }
-
-        .info {
-            color: #00e5ff;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 
 <body>
 
 <!-- ================= NAVBAR ================= -->
+
 <div class="navbar">
-    <div class="logo">🏦 MyBank</div>
+
+    <div class="logo">
+        🏦 MyBank
+    </div>
 
     <div class="nav-links">
         <a href="/dashboard">Dashboard</a>
@@ -127,42 +165,67 @@
         <a href="/withdraw">Withdraw</a>
         <a href="/logout">Logout</a>
     </div>
+
 </div>
 
 <!-- ================= MAIN ================= -->
+
 <div class="container">
 
     <div class="box">
 
         <h2>💸 Transfer Money</h2>
 
-        <!-- Sender Account -->
+        <!-- ACCOUNT INFO -->
+
         <p class="info" th:if="${account != null}">
-            Your Account: <span th:text="${account.accountNumber}"></span>
+            Your Account Number :
+            <b th:text="${account.accountNumber}"></b>
         </p>
 
-        <p class="error" th:if="${account == null}">
-            ❌ Account Not Found
+        <!-- SUCCESS MESSAGE -->
+
+        <p class="success"
+           th:if="${param.success}">
+            ✅ Money transferred successfully
         </p>
 
-        <form action="/account/transfer" method="post">
+        <!-- ERROR MESSAGE -->
 
-            <!-- sender account -->
-            <div th:if="${account != null}">
-                <input type="hidden" name="fromAcc" th:value="${account.accountNumber}">
-            </div>
+        <p class="error"
+           th:if="${param.error == 'AccountNotFound'}">
+            ❌ Account not found
+        </p>
 
-            <!-- receiver account -->
-            <input type="number" name="toAcc" placeholder="Receiver Account Number" required>
+        <p class="error"
+           th:if="${param.error == 'InsufficientBalance'}">
+            ❌ Insufficient balance
+        </p>
 
-            <!-- amount -->
-            <input type="number" name="amount" placeholder="Enter Amount" required>
+        <!-- FORM -->
 
-            <button type="submit">Transfer Money</button>
+		<form action="/account/transfer" method="post">
 
-        </form>
+		    <input type="hidden"
+		           name="fromAcc"
+		           th:value="${account.accountNumber}">
 
-    </div>
+		    <input type="text"
+		           name="toAcc"
+		           placeholder="Receiver Account Number"
+		           required>
+
+		    <input type="number"
+		           name="amount"
+		           placeholder="Enter Amount"
+		           required>
+
+		    <button type="submit">
+		        Transfer Money
+		    </button>
+
+		</form>
+	    </div>
 
 </div>
 

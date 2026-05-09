@@ -144,7 +144,7 @@
             ❌ Account Not Found
         </p>
 
-        <form action="/account/withdraw" method="post">
+        <form action="/withdraw" method="post">
 
             <div th:if="${account != null}">
                 <input type="hidden" name="accNo" th:value="${account.accountNumber}">

@@ -5,93 +5,94 @@ import com.bank.entity.Loan;
 import com.bank.entity.User;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.LoanRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class LoanService {
 
     @Autowired
-    private LoanRepository loanRepo;
-    public List<Loan> getUserLoans(User user) {
-
-        if (user == null) {
-            return new ArrayList<>();
-        }
-
-        return loanRepo.findByUser(user);
-    }
+    private LoanRepository loanRepository;
 
     @Autowired
-    private AccountRepository accountRepo;
+    private AccountRepository accountRepository;
 
-    // 👉 GET ALL
+    // ================= USER LOANS =================
+
+    public List<Loan> getUserLoans(User user) {
+        return loanRepository.findByUser(user);
+    }
+
+    // ================= ADMIN ALL LOANS =================
+
     public List<Loan> getAllLoans() {
-        return loanRepo.findAll();
+        return loanRepository.findAll();
     }
 
-    // 👉 APPROVE LOAN (MAIN FIX 🔥)
-    public void approveLoan(Long loanId) {
+    // ================= APPLY LOAN =================
 
-        Loan loan = loanRepo.findById(loanId).orElse(null);
-
-        if (loan == null) return;
-
-        // ❌ already approved? stop
-        if ("APPROVED".equalsIgnoreCase(loan.getStatus())) {
-            return;
-        }
-
-        // ✅ 1. Update status
-        loan.setStatus("APPROVED");
-
-        // ✅ 2. Get account
-        Account account = accountRepo.findByUser(loan.getUser());
-
-        if (account != null) {
-
-            double oldBalance = account.getBalance();
-            double loanAmount = loan.getAmount();
-
-            // ✅ 3. Add money
-            account.setBalance(oldBalance + loanAmount);
-
-            accountRepo.save(account);
-        }
-
-        // ✅ 4. Save loan
-        loanRepo.save(loan);
-    }
-
-    // 👉 REJECT
-    public void rejectLoan(Long loanId) {
-
-        Loan loan = loanRepo.findById(loanId).orElse(null);
-
-        if (loan != null) {
-            loan.setStatus("REJECTED");
-            loanRepo.save(loan);
-        }
-    }
     public void applyLoan(User user, Double amount) {
-
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        if (amount == null || amount <= 0) {
-            throw new RuntimeException("Invalid amount");
-        }
 
         Loan loan = new Loan();
 
         loan.setUser(user);
         loan.setAmount(amount);
-        loan.setStatus("PENDING"); // ✅ important
+        loan.setStatus("PENDING");
 
-        loanRepo.save(loan);
+        loanRepository.save(loan);
+    }
+
+    // ================= APPROVE LOAN =================
+
+    public void approveLoan(Long id) {
+
+        Loan loan = loanRepository.findById(id).orElse(null);
+
+        if (loan != null && loan.getStatus().equals("PENDING")) {
+
+            // UPDATE LOAN STATUS
+            loan.setStatus("APPROVED");
+            loanRepository.save(loan);
+
+            // GET USER
+            User user = loan.getUser();
+
+            // GET USER ACCOUNT
+            Account account = user.getAccount();
+
+            if (account != null) {
+
+                // IF BALANCE NULL
+                if (account.getBalance() == null) {
+                    account.setBalance(0.0);
+                }
+
+                // ADD LOAN AMOUNT TO BALANCE
+                Double updatedBalance =
+                        account.getBalance() + loan.getAmount();
+
+                account.setBalance(updatedBalance);
+
+                // SAVE UPDATED ACCOUNT
+                accountRepository.save(account);
+            }
+        }
+    }
+
+    // ================= REJECT LOAN =================
+
+    public void rejectLoan(Long id) {
+
+        Loan loan = loanRepository.findById(id).orElse(null);
+
+        if (loan != null && loan.getStatus().equals("PENDING")) {
+
+            loan.setStatus("REJECTED");
+
+            loanRepository.save(loan);
+        }
     }
 }

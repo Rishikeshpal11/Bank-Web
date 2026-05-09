@@ -1,35 +1,166 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin Loan</title>
+    <title>Admin Loan Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(120deg, #1e3c72, #2a5298);
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2a5298;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* Status Badge */
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .approved { background: green; }
+        .pending { background: orange; }
+        .rejected { background: red; }
+
+        /* Buttons */
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-size: 12px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .approve { background: green; }
+        .reject { background: red; }
+
+        .approve:hover { background: darkgreen; }
+        .reject:hover { background: darkred; }
+
+        .disabled {
+            background: gray !important;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 
 <body>
 
-<h2>Loan Requests</h2>
+<div class="container">
 
-<table border="1">
+    <h2>🏦 Admin Loan Dashboard</h2>
 
-    <tr>
-        <th>User</th>
-        <th>Amount</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
+    <div class="card">
 
-    <tr th:each="l : ${loans}">
-        <td th:text="${l.user.name}"></td>
-        <td th:text="${l.amount}"></td>
-        <td th:text="${l.status}"></td>
+        <table>
 
-        <td>
-            <a th:href="@{/loan/approve/{id}(id=${l.id})}">Approve</a>
-            |
-            <a th:href="@{/loan/reject/{id}(id=${l.id})}">Reject</a>
-        </td>
-    </tr>
+            <tr>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
 
-</table>
+            <tr th:each="l : ${loans}">
+                
+                <td th:text="${l.user.name}"></td>
+
+                <td>₹ <span th:text="${l.amount}"></span></td>
+
+                <!-- ✅ STATUS -->
+                <td>
+                    <span class="status"
+                          th:classappend="${l.status=='APPROVED'} ? 'approved' :
+                                          (${l.status=='PENDING'} ? 'pending' : 'rejected')"
+                          th:text="${l.status}">
+                    </span>
+                </td>
+
+                <!-- ✅ ACTION -->
+                <td>
+
+                    <!-- Only if pending -->
+                    <div th:if="${l.status == 'PENDING'}">
+
+                        <a class="btn approve"
+                           th:href="@{/admin/approve-loan/{id}(id=${l.id})}">
+                           ✔ Approve
+                        </a>
+
+                        <a class="btn reject"
+                           th:href="@{/admin/reject-loan/{id}(id=${l.id})}">
+                           ✖ Reject
+                        </a>
+
+                    </div>
+
+                    <!-- If already approved/rejected -->
+                    <div th:if="${l.status != 'PENDING'}">
+
+                        <a class="btn approve disabled">✔ Approved</a>
+                        <a class="btn reject disabled">✖ Rejected</a>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
 
 </body>
 </html>

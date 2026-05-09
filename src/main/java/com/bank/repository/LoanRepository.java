@@ -9,4 +9,5 @@ import java.util.List;
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     List<Loan> findByUser(User user);
+
 }

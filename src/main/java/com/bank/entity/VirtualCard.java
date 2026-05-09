@@ -11,14 +11,17 @@ public class VirtualCard {
 
     private String cardNumber;
     private String cvv;
-    private String expiryDate;
+    private String expiry;   // ✅ ONLY ONE FIELD
     private boolean frozen;
+
+    private String type;      // GOLD / PLATINUM
+    private String network;   // VISA / MASTERCARD
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    // getters & setters
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
@@ -44,12 +47,12 @@ public class VirtualCard {
         this.cvv = cvv;
     }
 
-    public String getExpiryDate() {
-        return expiryDate;
+    public String getExpiry() {
+        return expiry;
     }
 
-    public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setExpiry(String expiry) {
+        this.expiry = expiry;
     }
 
     public boolean isFrozen() {
@@ -58,6 +61,22 @@ public class VirtualCard {
 
     public void setFrozen(boolean frozen) {
         this.frozen = frozen;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
     }
 
     public User getUser() {

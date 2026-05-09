@@ -21,49 +21,49 @@ public class PageController {
 
     @Autowired
     private AccountService accountService;
+
     @Autowired
     private VirtualCardService virtualCardService;
 
-    // ---------------- HOME ----------------
+    // ================= HOME =================
     @GetMapping("/")
     public String home() {
         return "home";
     }
 
-    // ---------------- LOGIN PAGE ----------------
+    // ================= LOGIN PAGE =================
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
-    // ---------------- LOGIN PROCESS ----------------
+    // ================= LOGIN PROCESS =================
     @PostMapping("/login")
-    public String login(@ModelAttribute User user, HttpSession session) {
+    public String login(@ModelAttribute User user,
+                        HttpSession session) {
 
         User dbUser = userService.login(user.getEmail());
 
-        if (dbUser != null 
-            && dbUser.getPassword().equals(user.getPassword())
-            && dbUser.getRole().equalsIgnoreCase(user.getRole())) {
+        if (dbUser != null
+                && dbUser.getPassword().equals(user.getPassword())
+                && dbUser.getRole().equalsIgnoreCase(user.getRole())) {
 
             session.setAttribute("user", dbUser);
 
-            // optional: card create
-            virtualCardService.createCardIfNotExists(dbUser);
-
             if ("ADMIN".equalsIgnoreCase(dbUser.getRole())) {
                 return "redirect:/admin/dashboard";
-            } else {
-                return "redirect:/dashboard";
             }
+
+            return "redirect:/dashboard";
         }
 
-        return "redirect:/login?error=invalid";
+        return "redirect:/login?error";
     }
 
-    // ---------------- DASHBOARD ----------------
+    // ================= DASHBOARD =================
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
+    public String dashboard(HttpSession session,
+                            Model model) {
 
         User user = (User) session.getAttribute("user");
 
@@ -71,78 +71,205 @@ public class PageController {
             return "redirect:/login";
         }
 
-        Account acc = accountService.getByUser(user);
+        Account account = accountService.getByUser(user);
 
         model.addAttribute("user", user);
-        model.addAttribute("account", acc);
+        model.addAttribute("account", account);
 
         return "dashboard";
     }
 
-    // ---------------- REGISTER PAGE ----------------
+    // ================= REGISTER PAGE =================
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
-    // ---------------- REGISTER PROCESS (FIXED) ----------------
+    // ================= REGISTER PROCESS =================
     @PostMapping("/register")
     public String register(User user) {
 
         try {
 
-            // default role
-            if (user.getRole() == null || user.getRole().isEmpty()) {
+            if (user.getRole() == null
+                    || user.getRole().isEmpty()) {
+
                 user.setRole("USER");
             }
 
-            // 1. SAVE USER
             User savedUser = userService.register(user);
 
-            // 2. CREATE ACCOUNT
             accountService.createAccountIfNotExists(savedUser);
 
-            // 3. AUTO CARD CREATE
             virtualCardService.createCardIfNotExists(savedUser);
 
             return "redirect:/login?success";
 
         } catch (Exception e) {
+
             e.printStackTrace();
-            return "redirect:/register?error=server";
+
+            return "redirect:/register?error";
         }
     }
 
-    // ---------------- TRANSFER ----------------
+    // ================= TRANSFER PAGE =================
     @GetMapping("/transfer")
-    public String transferPage(HttpSession session, Model model) {
+    public String transferPage(HttpSession session,
+                               Model model) {
 
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
 
-        model.addAttribute("account", accountService.getByUser(user));
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("account",
+                accountService.getByUser(user));
+
         return "transfer";
     }
 
-    // ---------------- DEPOSIT ----------------
+    // ================= TRANSFER PROCESS =================
+    @PostMapping("/transfer")
+    public String transferMoney(
+            @RequestParam String fromAccount,
+            @RequestParam String toAccount,
+            @RequestParam double amount) {
+
+        Account sender =
+                accountService.getByAccountNumber(fromAccount);
+
+        Account receiver =
+                accountService.getByAccountNumber(toAccount);
+
+        // account not found
+        if (sender == null || receiver == null) {
+            return "redirect:/transfer?error=AccountNotFound";
+        }
+
+        // invalid amount
+        if (amount <= 0) {
+            return "redirect:/transfer?error=InvalidAmount";
+        }
+
+        // insufficient balance
+        if (sender.getBalance() < amount) {
+            return "redirect:/transfer?error=InsufficientBalance";
+        }
+
+        // transfer
+        sender.setBalance(sender.getBalance() - amount);
+
+        receiver.setBalance(receiver.getBalance() + amount);
+
+        accountService.save(sender);
+        accountService.save(receiver);
+
+        return "redirect:/dashboard?success";
+    }
+
+    // ================= DEPOSIT PAGE =================
     @GetMapping("/deposit")
-    public String depositPage(HttpSession session, Model model) {
+    public String depositPage(HttpSession session,
+                              Model model) {
 
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
 
-        model.addAttribute("account", accountService.getByUser(user));
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("account",
+                accountService.getByUser(user));
+
         return "deposit";
     }
 
-    // ---------------- WITHDRAW ----------------
-    @GetMapping("/withdraw")
-    public String withdrawPage(HttpSession session, Model model) {
+    // ================= DEPOSIT PROCESS =================
+    @PostMapping("/deposit")
+    public String depositMoney(
+            @RequestParam String accNo,
+            @RequestParam double amount,
+            HttpSession session) {
 
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
 
-        model.addAttribute("account", accountService.getByUser(user));
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Account account =
+                accountService.getByAccountNumber(accNo);
+
+        if (account == null) {
+            return "redirect:/deposit?error=AccountNotFound";
+        }
+
+        if (amount <= 0) {
+            return "redirect:/deposit?error=InvalidAmount";
+        }
+
+        account.setBalance(
+                account.getBalance() + amount
+        );
+
+        accountService.save(account);
+
+        return "redirect:/dashboard?success";
+    }
+
+    // ================= WITHDRAW PAGE =================
+    @GetMapping("/withdraw")
+    public String withdrawPage(HttpSession session,
+                               Model model) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("account",
+                accountService.getByUser(user));
+
         return "withdraw";
+    }
+
+    // ================= WITHDRAW PROCESS =================
+    @PostMapping("/withdraw")
+    public String withdrawMoney(
+            @RequestParam String accNo,
+            @RequestParam double amount,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Account account =
+                accountService.getByAccountNumber(accNo);
+
+        if (account == null) {
+            return "redirect:/withdraw?error=AccountNotFound";
+        }
+
+        if (amount <= 0) {
+            return "redirect:/withdraw?error=InvalidAmount";
+        }
+
+        if (account.getBalance() < amount) {
+            return "redirect:/withdraw?error=InsufficientBalance";
+        }
+
+        account.setBalance(
+                account.getBalance() - amount
+        );
+
+        accountService.save(account);
+
+        return "redirect:/dashboard?success";
     }
 }

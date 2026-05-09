@@ -3,6 +3,7 @@ package com.bank.service;
 import com.bank.entity.Account;
 import com.bank.entity.User;
 import com.bank.repository.AccountRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,38 +13,55 @@ public class AccountService {
     @Autowired
     private AccountRepository repo;
 
-    // ---------------- GET ACCOUNT BY ID ----------------
+    // ================= GET ACCOUNT BY ID =================
+
     public Account getAccount(Long id) {
+
         return repo.findById(id).orElse(null);
     }
 
-    // ---------------- SAVE ACCOUNT ----------------
+    // ================= SAVE ACCOUNT =================
+
     public void save(Account account) {
+
         repo.save(account);
     }
 
-    // ---------------- DEPOSIT ----------------
-    public void deposit(Long accNo, Double amount) {
+    // ================= FIND BY ACCOUNT NUMBER =================
 
-        Account acc = repo.findById(accNo)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+    public Account getByAccountNumber(String accNo) {
+
+        return repo.findByAccountNumber(accNo)
+                .orElse(null);
+    }
+
+    // ================= DEPOSIT =================
+
+    public void deposit(String accNo, Double amount) {
+
+        Account acc = repo.findByAccountNumber(accNo)
+                .orElseThrow(() ->
+                        new RuntimeException("Account not found"));
 
         if (amount == null || amount <= 0) {
-            throw new RuntimeException("Invalid deposit amount");
+            throw new RuntimeException("Invalid amount");
         }
 
         acc.setBalance(acc.getBalance() + amount);
+
         repo.save(acc);
     }
 
-    // ---------------- WITHDRAW ----------------
-    public void withdraw(Long accNo, Double amount) {
+    // ================= WITHDRAW =================
 
-        Account acc = repo.findById(accNo)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+    public void withdraw(String accNo, Double amount) {
+
+        Account acc = repo.findByAccountNumber(accNo)
+                .orElseThrow(() ->
+                        new RuntimeException("Account not found"));
 
         if (amount == null || amount <= 0) {
-            throw new RuntimeException("Invalid withdraw amount");
+            throw new RuntimeException("Invalid amount");
         }
 
         if (acc.getBalance() < amount) {
@@ -51,10 +69,12 @@ public class AccountService {
         }
 
         acc.setBalance(acc.getBalance() - amount);
+
         repo.save(acc);
     }
 
-    // ---------------- GET ACCOUNT BY USER ----------------
+    // ================= GET ACCOUNT BY USER =================
+
     public Account getByUser(User user) {
 
         if (user == null || user.getId() == null) {
@@ -64,33 +84,37 @@ public class AccountService {
         return repo.findByUser_Id(user.getId());
     }
 
-    // ---------------- CREATE ACCOUNT IF NOT EXISTS ----------------
+    // ================= CREATE ACCOUNT =================
+
     public void createAccountIfNotExists(User user) {
 
         if (user == null || user.getId() == null) {
             throw new RuntimeException("Invalid user");
         }
 
-        Account existing = repo.findByUser_Id(user.getId());
+        Account existing =
+                repo.findByUser_Id(user.getId());
 
         if (existing != null) {
             return;
         }
 
         Account acc = new Account();
+
         acc.setUser(user);
+
         acc.setBalance(0.0);
 
-        // SAFE ACCOUNT NUMBER (NO RANDOM COLLISION ISSUE)
+        // STRING ACCOUNT NUMBER
         acc.setAccountNumber(generateAccountNumber());
 
         repo.save(acc);
     }
 
-    // ---------------- SAFE ACCOUNT NUMBER GENERATOR ----------------
-    private Long generateAccountNumber() {
-        return System.currentTimeMillis(); // simple + unique for project
+    // ================= GENERATE ACCOUNT NUMBER =================
+
+    private String generateAccountNumber() {
+
+        return "ACC" + System.currentTimeMillis();
     }
 }
-
-

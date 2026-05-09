@@ -10,12 +10,26 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // DEPOSIT / WITHDRAW / TRANSFER
     private String type;
+
+    // TRANSACTION AMOUNT
     private Double amount;
-    private Long accountNumber;
+
+    // ACCOUNT NUMBER
+    private String accountNumber;
+
+    // DATE & TIME
     private LocalDateTime date;
 
-    public Transaction() {}
+    // ================= CONSTRUCTOR =================
+    public Transaction() {
+
+        // AUTO CURRENT TIME
+        this.date = LocalDateTime.now();
+    }
+
+    // ================= GETTERS & SETTERS =================
 
     public Long getId() {
         return id;
@@ -41,11 +55,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Long getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(Long accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 

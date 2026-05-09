@@ -2,10 +2,9 @@ package com.bank.service;
 
 import com.bank.entity.Transaction;
 import com.bank.repository.TransactionRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class TransactionService {
@@ -13,14 +12,19 @@ public class TransactionService {
     @Autowired
     private TransactionRepository repo;
 
-    public void saveTransaction(String type, Double amount, Long accNo) {
+    // SAVE TRANSACTION
+    public void saveTransaction(String type,
+                                Double amount,
+                                String accountNumber) {
 
-        Transaction t = new Transaction();
-        t.setType(type);
-        t.setAmount(amount);
-        t.setAccountNumber(accNo);
-        t.setDate(LocalDateTime.now());
+        Transaction tx = new Transaction();
 
-        repo.save(t);
+        tx.setType(type);
+        tx.setAmount(amount);
+
+        // ACCOUNT NUMBER STRING
+        tx.setAccountNumber(accountNumber);
+
+        repo.save(tx);
     }
 }

@@ -1,116 +1,729 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Virtual Card</title>
+    <title>Premium Virtual Card</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #2c5364);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
         }
 
-        h2 {
-            margin-bottom: 20px;
-            color: #00e5ff;
+        body{
+
+            height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            overflow:hidden;
+
+            background:
+                    radial-gradient(circle at top left,#1a1f71 0%,transparent 30%),
+                    radial-gradient(circle at bottom right,#ff0055 0%,transparent 30%),
+                    linear-gradient(135deg,#090b1a,#111827,#1e293b);
         }
 
-        .card {
-            width: 380px;
-            height: 220px;
-            border-radius: 20px;
-            padding: 25px;
+        /* GLOW */
 
-            background: linear-gradient(45deg, #00e5ff, #0077ff);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            position: relative;
+        body::before{
+
+            content:'';
+
+            position:absolute;
+
+            width:500px;
+            height:500px;
+
+            background:#00e5ff30;
+
+            filter:blur(120px);
+
+            top:-200px;
+            left:-200px;
         }
 
-        .chip {
-            width: 50px;
-            height: 35px;
-            background: gold;
-            border-radius: 8px;
+        body::after{
+
+            content:'';
+
+            position:absolute;
+
+            width:500px;
+            height:500px;
+
+            background:#ff005530;
+
+            filter:blur(120px);
+
+            bottom:-200px;
+            right:-200px;
         }
 
-        .holder {
-            margin-top: 30px;
-            font-size: 18px;
+        .wrapper{
+
+            position:relative;
+
+            z-index:2;
+
+            display:flex;
+            flex-direction:column;
+            align-items:center;
         }
 
-        .number {
-            font-size: 22px;
-            margin-top: 20px;
-            letter-spacing: 3px;
+        /* 3D SCENE */
+
+        .scene{
+            perspective:2000px;
         }
 
-        .cvv {
-            margin-top: 15px;
+        .card{
+
+            width:420px;
+            height:250px;
+
+            position:relative;
+
+            transform-style:preserve-3d;
+
+            transition:
+                    transform 1s cubic-bezier(.4,.2,.2,1);
+
+            cursor:pointer;
         }
 
-        .status {
-            margin-top: 10px;
-            font-weight: bold;
+        /* CARD FACE */
+
+        .face{
+
+            position:absolute;
+
+            width:100%;
+            height:100%;
+
+            border-radius:28px;
+
+            overflow:hidden;
+
+            padding:28px;
+
+            color:white;
+
+            backface-visibility:hidden;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(255,255,255,0.18),
+                            rgba(255,255,255,0.05)
+                    );
+
+            border:
+                    1px solid rgba(255,255,255,0.2);
+
+            backdrop-filter:blur(20px);
+
+            box-shadow:
+                    0 25px 45px rgba(0,0,0,0.45),
+                    inset 0 1px 1px rgba(255,255,255,0.2);
         }
 
-        .active {
-            color: #00ff88;
+        /* SHINE EFFECT */
+
+        .face::before{
+
+            content:'';
+
+            position:absolute;
+
+            width:180%;
+            height:180%;
+
+            background:
+                    linear-gradient(
+                            120deg,
+                            transparent 30%,
+                            rgba(255,255,255,0.35) 50%,
+                            transparent 70%
+                    );
+
+            top:-120%;
+            left:-120%;
+
+            transform:rotate(25deg);
+
+            animation:shine 6s infinite;
         }
 
-        .frozen {
-            color: #ff4d4d;
+        @keyframes shine{
+
+            0%{
+                top:-120%;
+                left:-120%;
+            }
+
+            100%{
+                top:120%;
+                left:120%;
+            }
         }
 
-        a {
-            margin-top: 20px;
-            text-decoration: none;
-            color: yellow;
-            font-weight: bold;
+        /* FRONT */
+
+        .front{
+
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
         }
 
-        a:hover {
-            color: #fff;
+        .top{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
         }
+
+        /* CHIP */
+
+        .chip{
+
+            width:65px;
+            height:48px;
+
+            border-radius:12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #f7d774,
+                            #c59d22
+                    );
+
+            position:relative;
+
+            overflow:hidden;
+        }
+
+        .chip::before{
+
+            content:'';
+
+            position:absolute;
+
+            width:100%;
+            height:2px;
+
+            background:#ffffff80;
+
+            top:50%;
+        }
+
+        .bank{
+
+            text-align:right;
+
+            font-size:14px;
+
+            letter-spacing:2px;
+
+            font-weight:600;
+
+            color:#dbeafe;
+        }
+
+        .wifi{
+
+            font-size:28px;
+
+            transform:rotate(90deg);
+        }
+
+        /* CARD NUMBER */
+
+        .number{
+
+            font-size:28px;
+
+            letter-spacing:4px;
+
+            font-weight:500;
+
+            margin-top:25px;
+
+            user-select:none;
+        }
+
+        /* BOTTOM */
+
+        .bottom{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:end;
+        }
+
+        .label{
+
+            font-size:11px;
+
+            opacity:.7;
+
+            letter-spacing:1px;
+        }
+
+        .holder{
+
+            margin-top:5px;
+
+            font-size:16px;
+
+            font-weight:500;
+
+            letter-spacing:1px;
+
+            text-transform:uppercase;
+        }
+
+        .expiry{
+
+            margin-top:5px;
+
+            font-size:18px;
+
+            font-weight:600;
+        }
+
+        /* MASTERCARD */
+
+        .mastercard{
+
+            position:absolute;
+
+            right:25px;
+            bottom:25px;
+
+            display:flex;
+            align-items:center;
+        }
+
+        .circle{
+
+            width:42px;
+            height:42px;
+
+            border-radius:50%;
+        }
+
+        .red{
+            background:#ff3b30;
+        }
+
+        .yellow{
+
+            background:#ffcc00;
+
+            margin-left:-12px;
+
+            opacity:.85;
+        }
+
+        /* BACK SIDE */
+
+        .back{
+            transform:rotateY(180deg);
+        }
+
+        .stripe{
+
+            width:100%;
+            height:55px;
+
+            background:black;
+
+            margin-top:15px;
+        }
+
+        .cvv-title{
+
+            margin-top:25px;
+
+            font-size:13px;
+
+            letter-spacing:1px;
+        }
+
+        .cvv-area{
+
+            display:flex;
+            justify-content:flex-end;
+
+            margin-top:15px;
+        }
+
+        .cvv-box{
+
+            width:90px;
+
+            background:white;
+
+            color:black;
+
+            padding:10px;
+
+            border-radius:8px;
+
+            text-align:center;
+
+            font-weight:700;
+
+            letter-spacing:3px;
+        }
+
+        .signature{
+
+            margin-top:25px;
+
+            font-size:12px;
+
+            opacity:.6;
+
+            line-height:1.7;
+        }
+
+        /* BUTTON AREA */
+
+        .btn-group{
+
+            display:flex;
+
+            gap:15px;
+
+            margin-top:35px;
+        }
+
+        /* FLIP BUTTON */
+
+        .flip-btn{
+
+            padding:14px 40px;
+
+            border:none;
+
+            border-radius:50px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #00e5ff,
+                            #00bcd4
+                    );
+
+            color:#001018;
+
+            font-size:15px;
+
+            font-weight:700;
+
+            cursor:pointer;
+
+            transition:.3s;
+
+            box-shadow:
+                    0 10px 25px rgba(0,229,255,.35);
+        }
+
+        .flip-btn:hover{
+
+            transform:
+                    translateY(-3px)
+                    scale(1.03);
+        }
+
+        /* BACK BUTTON */
+
+        .back-btn{
+
+            padding:14px 35px;
+
+            border:none;
+
+            border-radius:50px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #ff4b2b,
+                            #ff416c
+                    );
+
+            color:white;
+
+            font-size:15px;
+
+            font-weight:700;
+
+            cursor:pointer;
+
+            transition:.3s;
+
+            box-shadow:
+                    0 10px 25px rgba(255,65,108,.35);
+        }
+
+        .back-btn:hover{
+
+            transform:
+                    translateY(-3px)
+                    scale(1.03);
+        }
+
     </style>
+
 </head>
 
 <body>
 
-<h2>💳 My Virtual Card</h2>
+<div class="wrapper">
 
-<div class="card">
+    <div class="scene">
 
-    <div class="chip"></div>
+        <div class="card" id="card">
 
-    <!-- SAFE NULL CHECK -->
-    <div class="holder">
-        👤 
-        <span th:text="${card != null && card.user != null ? card.user.name : 'User'}"></span>
+            <!-- FRONT -->
+
+            <div class="face front">
+
+                <div class="top">
+
+                    <div class="chip"></div>
+
+                    <div style="display:flex; align-items:center; gap:20px;">
+
+                        <div class="wifi">📶</div>
+
+                        <div class="bank">
+                            MyBank
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD NUMBER -->
+
+                <div>
+
+                    <div class="number"
+                         id="cardNumber"
+                         onclick="toggleNumber()"
+
+                         th:attr="data-full=${card.cardNumber}"
+
+                         th:text="'**** **** **** ' +
+                         ${#strings.substring(card.cardNumber,
+                         card.cardNumber.length()-4)}">
+                    </div>
+
+                </div>
+
+                <!-- BOTTOM -->
+
+                <div class="bottom">
+
+                    <div>
+
+                        <div class="label">
+                            CARD HOLDER
+                        </div>
+
+                        <div class="holder"
+                             th:text="${card.user.name}">
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <div class="label">
+                            EXPIRES
+                        </div>
+
+                        <div class="expiry"
+                             th:text="${card.expiry}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- LOGO -->
+
+                <div class="mastercard">
+
+                    <div class="circle red"></div>
+
+                    <div class="circle yellow"></div>
+
+                </div>
+
+            </div>
+
+            <!-- BACK -->
+
+            <div class="face back">
+
+                <div class="stripe"></div>
+
+                <div class="cvv-title">
+                    SECURITY CODE
+                </div>
+
+                <div class="cvv-area">
+
+                    <div class="cvv-box"
+                         th:text="${card.cvv}">
+                    </div>
+
+                </div>
+
+                <div class="signature">
+
+                    This card is property of Premium Bank.
+                    <br>
+                    Unauthorized use is prohibited.
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="number" th:text="${card != null ? card.cardNumber : '---- ---- ---- ----'}"></div>
+    <!-- BUTTONS -->
 
-    <div class="cvv">
-        CVV: 
-        <span th:text="${card != null ? card.cvv : '---'}"></span>
-    </div>
+    <div class="btn-group">
 
-    <!-- STATUS -->
-    <div class="status">
-        <span th:if="${card != null && !card.frozen}" class="active">🟢 Active</span>
-        <span th:if="${card != null && card.frozen}" class="frozen">❄ Frozen</span>
+        <!-- FLIP -->
+
+        <button class="flip-btn"
+                onclick="flipCard()">
+
+            🔄 Flip Card
+
+        </button>
+
+        <!-- BACK -->
+
+        <button class="back-btn"
+                onclick="goBack()">
+
+            ⬅ Back
+
+        </button>
+
     </div>
 
 </div>
 
-<!-- ACTION -->
-<a href="/card/toggle">🔄 Freeze / Unfreeze Card</a>
+<script>
+
+    const card =
+        document.getElementById("card");
+
+    let flipped = false;
+
+    /* FLIP FUNCTION */
+
+    function flipCard(){
+
+        flipped = !flipped;
+
+        if(flipped){
+
+            card.style.transform =
+                "rotateY(180deg)";
+
+        }else{
+
+            card.style.transform =
+                "rotateY(0deg)";
+        }
+    }
+
+    /* BACK FUNCTION */
+
+    function goBack(){
+
+        window.history.back();
+
+        // OR:
+        // window.location.href="/dashboard";
+    }
+
+    /* SHOW / HIDE CARD NUMBER */
+
+    function toggleNumber(){
+
+        let el =
+            document.getElementById("cardNumber");
+
+        let full =
+            el.getAttribute("data-full");
+
+        if(el.innerText.includes("*")){
+
+            el.innerText = full;
+
+        }else{
+
+            el.innerText =
+                "**** **** **** " +
+                full.slice(-4);
+        }
+    }
+
+    /* REAL 3D TILT EFFECT */
+
+    document.addEventListener("mousemove",(e)=>{
+
+        // flip hone ke baad tilt band
+
+        if(flipped) return;
+
+        let xAxis =
+            (window.innerWidth / 2 - e.pageX) / 25;
+
+        let yAxis =
+            (window.innerHeight / 2 - e.pageY) / 25;
+
+        card.style.transform =
+
+            `rotateY(${xAxis}deg)
+             rotateX(${yAxis}deg)`;
+    });
+
+    /* RESET POSITION */
+
+    document.addEventListener("mouseleave",()=>{
+
+        if(!flipped){
+
+            card.style.transform =
+                "rotateY(0deg) rotateX(0deg)";
+        }
+    });
+
+</script>
 
 </body>
 </html>

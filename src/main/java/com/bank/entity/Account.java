@@ -1,7 +1,5 @@
 package com.bank.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -9,44 +7,49 @@ import jakarta.persistence.*;
 public class Account {
 
     @Id
-    private Long accountNumber;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String accountNumber;
 
     private Double balance;
 
-    // IMPORTANT FIXES:
-    // 1. fetch type added (safe)
-    // 2. cascade optional (recommended)
-    // 3. referencedColumnName added (clarity)
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
-    public Account() {}
 
-    // ---------------- GETTERS / SETTERS ----------------
+	public Long getId() {
+		return id;
+	}
 
-    public Long getAccountNumber() {
-        return accountNumber;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
-    }
+	public String getAccountNumber() {
+		return accountNumber;
+	}
 
-    public Double getBalance() {
-        return balance;
-    }
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
+	public Double getBalance() {
+		return balance;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+    // ================= GETTERS & SETTERS =================
+
 }

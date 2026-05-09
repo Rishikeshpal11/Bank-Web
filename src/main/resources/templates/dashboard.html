@@ -1,285 +1,866 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Bank Dashboard</title>
+    <title>Premium Bank Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+
+            background:
+                    radial-gradient(circle at top left,#1a237e 0%,transparent 30%),
+                    radial-gradient(circle at bottom right,#00bcd4 0%,transparent 30%),
+                    linear-gradient(135deg,#0f172a,#111827,#1e293b);
+
+            min-height:100vh;
+            color:white;
+            overflow-x:hidden;
         }
 
         /* NAVBAR */
-        .navbar {
-            background: #0d47a1;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
+
+        .navbar{
+
+            width:95%;
+            margin:20px auto;
+
+            padding:18px 30px;
+
+            border-radius:22px;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            background:rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(20px);
+
+            border:1px solid rgba(255,255,255,0.1);
+
+            box-shadow:0 10px 30px rgba(0,0,0,0.25);
         }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 14px;
+        .logo{
+
+            font-size:24px;
+            font-weight:700;
+            color:#00e5ff;
         }
 
-        .nav-links a:hover {
-            text-decoration: underline;
+        .nav-links{
+
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+        }
+
+        .nav-links a{
+
+            text-decoration:none;
+            color:white;
+
+            padding:10px 16px;
+
+            border-radius:12px;
+
+            transition:.3s;
+
+            font-size:14px;
+
+            background:rgba(255,255,255,0.05);
+        }
+
+        .nav-links a:hover{
+
+            background:#00e5ff;
+            color:#001018;
+
+            transform:translateY(-2px);
         }
 
         /* WELCOME */
-        .welcome {
-            padding: 15px 20px;
-            font-size: 18px;
+
+        .welcome{
+
+            width:90%;
+            margin:20px auto;
+
+            font-size:32px;
+            font-weight:600;
+        }
+
+        .welcome span{
+            color:#00e5ff;
         }
 
         /* MESSAGE */
-        .message {
-            padding: 10px;
-            border-radius: 8px;
-            width: 300px;
-            margin: 10px auto;
-            text-align: center;
-            font-weight: bold;
+
+        .message{
+
+            width:350px;
+
+            margin:15px auto;
+
+            padding:14px;
+
+            text-align:center;
+
+            border-radius:14px;
+
+            font-weight:600;
+
+            backdrop-filter:blur(15px);
         }
 
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
+        .success{
+
+            background:rgba(0,255,120,0.12);
+
+            border:1px solid rgba(0,255,120,0.25);
+
+            color:#00ff99;
         }
 
-        .error {
-            background: #ffebee;
-            color: #c62828;
+        .error{
+
+            background:rgba(255,0,80,0.12);
+
+            border:1px solid rgba(255,0,80,0.25);
+
+            color:#ff5c8a;
         }
 
-        /* CARD */
-        .card {
-            background: white;
-            width: 350px;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
+        /* ACCOUNT CARD */
+
+        .account-card{
+
+            width:450px;
+
+            margin:35px auto;
+
+            padding:32px;
+
+            border-radius:30px;
+
+            position:relative;
+
+            overflow:hidden;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(255,255,255,0.15),
+                            rgba(255,255,255,0.05)
+                    );
+
+            backdrop-filter:blur(25px);
+
+            border:1px solid rgba(255,255,255,0.15);
+
+            box-shadow:
+                    0 25px 50px rgba(0,0,0,0.35),
+                    inset 0 1px 1px rgba(255,255,255,0.2);
+
+            transition:.4s;
         }
 
-        .amount {
-            font-size: 22px;
-            font-weight: bold;
-            color: #0d47a1;
+        .account-card:hover{
+
+            transform:
+                    translateY(-8px)
+                    scale(1.02);
+
+            box-shadow:
+                    0 40px 70px rgba(0,0,0,0.45);
         }
+
+        .card-glow{
+
+            position:absolute;
+
+            width:250px;
+            height:250px;
+
+            background:#00e5ff40;
+
+            border-radius:50%;
+
+            filter:blur(90px);
+
+            top:-100px;
+            right:-100px;
+        }
+
+        .account-top{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            position:relative;
+            z-index:2;
+        }
+
+        .mini-label{
+
+            font-size:12px;
+
+            letter-spacing:2px;
+
+            opacity:.7;
+
+            margin-bottom:10px;
+        }
+
+        .account-top h2{
+
+            font-size:28px;
+            font-weight:600;
+        }
+
+        .bank-logo{
+
+            width:70px;
+            height:70px;
+
+            border-radius:20px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-size:32px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #00e5ff,
+                            #2962ff
+                    );
+
+            box-shadow:
+                    0 12px 30px rgba(0,229,255,.35);
+        }
+
+        .divider{
+
+            height:1px;
+
+            background:rgba(255,255,255,0.12);
+
+            margin:28px 0;
+        }
+
+        .label{
+
+            font-size:12px;
+
+            letter-spacing:2px;
+
+            opacity:.65;
+
+            margin-bottom:12px;
+        }
+
+        .account-number{
+
+            font-size:25px;
+
+            letter-spacing:4px;
+
+            font-weight:600;
+        }
+
+        .balance-box{
+            margin-top:35px;
+        }
+
+        .balance{
+
+            font-size:45px;
+
+            font-weight:700;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #00ff99,
+                            #00e5ff
+                    );
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .bottom-section{
+
+            margin-top:40px;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .status{
+
+            color:#00ff99;
+
+            font-size:14px;
+
+            font-weight:600;
+        }
+
+        .premium{
+
+            font-size:13px;
+
+            letter-spacing:2px;
+
+            opacity:.75;
+        }
+
+        /* SHOW HIDE BUTTON */
+
+        .toggle-btn{
+
+            border:none;
+
+            padding:8px 16px;
+
+            border-radius:20px;
+
+            cursor:pointer;
+
+            font-size:12px;
+
+            font-weight:600;
+
+            color:white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #00e5ff,
+                            #2962ff
+                    );
+
+            transition:.3s;
+        }
+
+        .toggle-btn:hover{
+            transform:scale(1.05);
+        }
+
+        /* FLOATING CHAT BUTTON */
+
+        .floating-btn{
+
+            position:fixed;
+
+            bottom:25px;
+            right:25px;
+
+            width:65px;
+            height:65px;
+
+            border-radius:50%;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #00e5ff,
+                            #2962ff
+                    );
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-size:28px;
+
+            cursor:pointer;
+
+            box-shadow:
+                    0 12px 25px rgba(0,229,255,.35);
+
+            z-index:999;
+        }
+
+        /* WIDGET */
+
+        .widget-box{
+
+            position:fixed;
+
+            bottom:110px;
+            right:25px;
+
+            width:340px;
+
+            padding:20px;
+
+            border-radius:22px;
+
+            display:none;
+
+            background:rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(25px);
+
+            border:1px solid rgba(255,255,255,0.12);
+
+            box-shadow:
+                    0 15px 40px rgba(0,0,0,0.35);
+
+            z-index:1000;
+        }
+
+        .tabs{
+
+            display:flex;
+            gap:10px;
+
+            margin-bottom:18px;
+        }
+
+        .tabs button{
+
+            flex:1;
+
+            padding:12px;
+
+            border:none;
+
+            border-radius:12px;
+
+            cursor:pointer;
+
+            color:white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #2962ff,
+                            #00bcd4
+                    );
+        }
+
+        .tab-content h4{
+            margin-bottom:12px;
+        }
+
+        .tab-content p{
+
+            margin-bottom:14px;
+
+            font-size:14px;
+
+            line-height:1.6;
+        }
+
+        .widget-box input,
+        .widget-box textarea{
+
+            width:100%;
+
+            padding:12px;
+
+            margin-bottom:12px;
+
+            border:none;
+
+            border-radius:12px;
+
+            outline:none;
+
+            background:rgba(255,255,255,0.08);
+
+            color:white;
+        }
+
+        .widget-box textarea{
+            resize:none;
+            height:90px;
+        }
+
+        .widget-box button[type="submit"]{
+
+            width:100%;
+
+            padding:12px;
+
+            border:none;
+
+            border-radius:12px;
+
+            cursor:pointer;
+
+            color:white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #00e5ff,
+                            #2962ff
+                    );
+        }
+
     </style>
-	<style>
-	/* FLOATING BUTTON */
-	.floating-btn{
-	    position: fixed;
-	    bottom: 25px;
-	    right: 25px;
-	    width: 60px;
-	    height: 60px;
-	    background: #0d47a1;
-	    color: white;
-	    border-radius: 50%;
-	    font-size: 26px;
-	    display: flex;
-	    align-items: center;
-	    justify-content: center;
-	    cursor: pointer;
-	    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-	    z-index: 999;
-	}
 
-	/* POPUP BOX */
-	.widget-box{
-	    position: fixed;
-	    bottom: 100px;
-	    right: 25px;
-	    width: 320px;
-	    background: white;
-	    border-radius: 12px;
-	    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-	    padding: 15px;
-	    display: none;
-	    z-index: 1000;
-	}
-
-	/* TABS */
-	.tabs{
-	    display: flex;
-	    justify-content: space-between;
-	    margin-bottom: 10px;
-	}
-
-	.tabs button{
-	    width: 50%;
-	    padding: 8px;
-	    border: none;
-	    cursor: pointer;
-	    background: #0d47a1;
-	    color: white;
-	}
-
-	/* CONTENT */
-	.tab-content p{
-	    font-size: 14px;
-	    margin-bottom: 10px;
-	}
-
-	/* FORM */
-	.widget-box input,
-	.widget-box textarea{
-	    width: 100%;
-	    margin-bottom: 8px;
-	    padding: 8px;
-	}
-
-	.widget-box button{
-	    width: 100%;
-	    background: #0d47a1;
-	    color: white;
-	    border: none;
-	    padding: 8px;
-	    cursor: pointer;
-	}
-	</style>
 </head>
 
 <body>
-	
+
 <!-- NAVBAR -->
+
 <div class="navbar">
-    <div>🏦 Bank System</div>
+
+    <div class="logo">
+        🏦 MyBank
+    </div>
 
     <div class="nav-links">
-		<a href="/loan">Apply Loan</a>
+
+        <a href="/loan">Apply Loan</a>
+
         <a href="/transfer">Transfer</a>
+
         <a href="/deposit">Deposit</a>
+
         <a href="/withdraw">Withdraw</a>
-		<a href="/card">💳 My Virtual Card</a>
-		<a href="/upi">💸 UPI Transfer</a>
+
+        <a href="/card">💳 Virtual Card</a>
+
+        <a href="/upi">💸 UPI</a>
+
         <a href="/logout">Logout</a>
+
     </div>
+
 </div>
 
 <!-- WELCOME -->
+
 <div class="welcome">
+
     👋 Welcome
-    <b th:text="${user.role == 'ADMIN' ? 'Admin' : user.name}"></b>
+    <span th:text="${user.role == 'ADMIN' ? 'Admin' : user.name}"></span>
+
 </div>
 
-<!-- ✅ SUCCESS MESSAGES -->
+<!-- SUCCESS -->
+
 <div class="message success"
      th:if="${param.success != null and param.success.contains('deposit')}">
+
     ✅ Deposit Successful
-</div>
 
-<div class="message success"
-     th:if="${param.success != null and param.success.contains('withdraw')}">
-    ✅ Withdrawal Successful
-</div>
-
-<div class="message success"
-     th:if="${param.success != null and param.success.contains('transfer')}">
-    ✅ Transfer Successful
-</div>
-
-<!-- ❌ ERROR MESSAGES -->
-<div class="message error"
-     th:if="${param.error != null and param.error.contains('InsufficientBalance')}">
-    ❌ Insufficient Balance
-</div>
-
-<div class="message error"
-     th:if="${param.error != null and param.error.contains('AccountNotFound')}">
-    ❌ Invalid Account Number
-</div>
-
-<div class="message error"
-     th:if="${param.error != null and param.error.contains('NoAccount')}">
-    ❌ Account Not Found
 </div>
 
 <!-- ACCOUNT CARD -->
-<div class="card">
 
-    <h3>Account Details</h3>
+<div class="account-card">
 
-    <div th:if="${account != null}">
-        <p>Account Number</p>
-        <div class="amount" th:text="${account.accountNumber}"></div>
+    <div class="card-glow"></div>
 
-        <p style="margin-top:10px;">Balance</p>
-        <div class="amount" style="color:green;" th:text="${account.balance}"></div>
+    <div class="account-top">
+
+        <div>
+
+            <div class="mini-label">
+                PREMIUM ACCOUNT
+            </div>
+
+            <h2 th:text="${user.name}"></h2>
+
+        </div>
+
+        <div class="bank-logo">
+            💎
+        </div>
+
     </div>
 
-    <div th:if="${account == null}" class="message error">
-        ❌ Account Not Found
+    <div class="divider"></div>
+
+    <!-- ACCOUNT NUMBER -->
+
+    <div class="info-box">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        ">
+
+            <div class="label">
+                ACCOUNT NUMBER
+            </div>
+
+            <button class="toggle-btn"
+                    onclick="toggleAccountNumber()"
+                    id="accBtn">
+
+                👁 Show
+
+            </button>
+
+        </div>
+
+        <div class="account-number"
+             id="accountNumber"
+
+             th:attr="data-full=${account.accountNumber}"
+
+             th:text="'XXXXXX' +
+             ${#strings.substring(
+                account.accountNumber.toString(),
+                account.accountNumber.toString().length()-4
+             )}">
+
+        </div>
+
+    </div>
+
+    <!-- BALANCE -->
+
+    <div class="balance-box">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        ">
+
+            <div class="label">
+                AVAILABLE BALANCE
+            </div>
+
+            <button class="toggle-btn"
+                    onclick="toggleBalance()"
+                    id="balBtn">
+
+                👁 Show
+
+            </button>
+
+        </div>
+
+        <div class="balance"
+             id="balance"
+
+             th:attr="data-full=${account.balance.toString()}"
+
+             th:text="'₹ ********'">
+
+        </div>
+
+    </div>
+
+    <div class="bottom-section">
+
+        <div class="status">
+            ● ACTIVE
+        </div>
+
+        <div class="premium">
+            SECURE BANKING
+        </div>
+
     </div>
 
 </div>
-<!-- 🔥 FLOATING BUTTON -->
-<div class="floating-btn" onclick="toggleWidget()">
+
+<!-- FLOATING CHAT BUTTON -->
+
+<div class="floating-btn"
+     onclick="toggleWidget()">
+
     💬
+
 </div>
 
-<!-- 🔥 POPUP BOX -->
-<div class="widget-box" id="widgetBox">
+<!-- WIDGET -->
 
-    <!-- Tabs -->
+<div class="widget-box"
+     id="widgetBox">
+
     <div class="tabs">
-        <button onclick="showTab('faq')">FAQ</button>
-        <button onclick="showTab('contact')">Contact</button>
+
+        <button onclick="showTab('faq')">
+            FAQ
+        </button>
+
+        <button onclick="showTab('contact')">
+            Contact
+        </button>
+
     </div>
 
-    <!-- FAQ SECTION -->
-    <div id="faq" class="tab-content">
-        <h4>FAQ</h4>
+    <div id="faq"
+         class="tab-content">
 
-        <p><b>How to transfer money?</b><br>Use transfer page and enter account number.</p>
+        <h4>Frequently Asked Questions</h4>
 
-        <p><b>Loan approval time?</b><br>Instant or within few minutes.</p>
+        <p>
+            <b>How to transfer money?</b><br>
+            Open transfer page and enter account details.
+        </p>
 
-        <p><b>UPI transfer failed?</b><br>Check correct UPI ID.</p>
+        <p>
+            <b>Loan approval time?</b><br>
+            Usually instant or within few minutes.
+        </p>
+
     </div>
 
-    <!-- CONTACT SECTION -->
-    <div id="contact" class="tab-content" style="display:none;">
-        <h4>Contact Us</h4>
+    <div id="contact"
+         class="tab-content"
+         style="display:none;">
 
-        <form action="admin/contact/save" method="post">
-            <input type="text" name="name" placeholder="Your Name" required>
+        <h4>Contact Support</h4>
 
-            <input type="email" name="email" placeholder="Email" required>
+        <form action="/admin/contact/save"
+              method="post">
 
-            <textarea name="message" placeholder="Message" required></textarea>
+            <input type="text"
+                   name="name"
+                   placeholder="Your Name"
+                   required>
 
-            <button type="submit">Send</button>
+            <input type="email"
+                   name="email"
+                   placeholder="Email"
+                   required>
+
+            <textarea name="message"
+                      placeholder="Message"
+                      required></textarea>
+
+            <button type="submit">
+                Send Message
+            </button>
+
         </form>
+
     </div>
 
 </div>
+
 <script>
-function toggleWidget(){
-    let box = document.getElementById("widgetBox");
 
-    if(box.style.display === "block"){
-        box.style.display = "none";
-    } else {
-        box.style.display = "block";
+    /* ACCOUNT NUMBER TOGGLE */
+
+    let accountVisible = false;
+
+    function toggleAccountNumber(){
+
+        let acc =
+            document.getElementById("accountNumber");
+
+        let btn =
+            document.getElementById("accBtn");
+
+        let full =
+            acc.getAttribute("data-full");
+
+        if(!accountVisible){
+
+            acc.innerText = full;
+
+            btn.innerText = "🙈 Hide";
+
+            accountVisible = true;
+
+        }else{
+
+            acc.innerText =
+                "XXXXXX" + full.slice(-4);
+
+            btn.innerText = "👁 Show";
+
+            accountVisible = false;
+        }
     }
-}
 
-function showTab(tab){
-    document.getElementById("faq").style.display = "none";
-    document.getElementById("contact").style.display = "none";
+    /* BALANCE TOGGLE */
 
-    document.getElementById(tab).style.display = "block";
-}
+    let balanceVisible = false;
+
+    function toggleBalance(){
+
+        let bal =
+            document.getElementById("balance");
+
+        let btn =
+            document.getElementById("balBtn");
+
+        let full =
+            bal.getAttribute("data-full");
+
+        if(!balanceVisible){
+
+            bal.innerText =
+                "₹ " + full;
+
+            btn.innerText =
+                "🙈 Hide";
+
+            balanceVisible = true;
+
+        }else{
+
+            bal.innerText =
+                "₹ ********";
+
+            btn.innerText =
+                "👁 Show";
+
+            balanceVisible = false;
+        }
+    }
+
+    /* CHAT WIDGET */
+
+    function toggleWidget(){
+
+        let box =
+            document.getElementById("widgetBox");
+
+        if(box.style.display === "block"){
+
+            box.style.display = "none";
+
+        }else{
+
+            box.style.display = "block";
+        }
+    }
+
+    function showTab(tab){
+
+        document.getElementById("faq")
+            .style.display = "none";
+
+        document.getElementById("contact")
+            .style.display = "none";
+
+        document.getElementById(tab)
+            .style.display = "block";
+    }
+
 </script>
 
 </body>

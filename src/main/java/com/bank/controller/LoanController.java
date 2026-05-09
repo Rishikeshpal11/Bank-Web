@@ -34,9 +34,7 @@ public class LoanController {
 
         User user = (User) session.getAttribute("user");
 
-        if (user == null) {
-            return "redirect:/login"; // ✅ safety
-        }
+        if (user == null) return "redirect:/login";
 
         service.applyLoan(user, amount);
 

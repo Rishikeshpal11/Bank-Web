@@ -1,146 +1,734 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Bank Home</title>
+    <title>Premium Digital Bank</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
 
-            /* ✅ NEW BANKING BACKGROUND IMAGE */
-            background: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1400&q=80')
-                        no-repeat center center/cover;
-
-            height: 100vh;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
         }
 
-        /* DARK OVERLAY */
-        .overlay {
-            background: rgba(0,0,0,0.65);
-            height: 100vh;
+        body{
+
+            min-height:100vh;
+            overflow-x:hidden;
+
+            background:
+                    linear-gradient(
+                            rgba(5,10,25,0.75),
+                            rgba(5,10,25,0.85)
+                    ),
+
+                    url('https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80')
+                    no-repeat center center/cover;
+
+            color:white;
+        }
+
+        /* GLOW EFFECT */
+
+        body::before{
+
+            content:'';
+
+            position:absolute;
+
+            width:500px;
+            height:500px;
+
+            background:#00e5ff30;
+
+            border-radius:50%;
+
+            filter:blur(120px);
+
+            top:-150px;
+            left:-150px;
+        }
+
+        body::after{
+
+            content:'';
+
+            position:absolute;
+
+            width:500px;
+            height:500px;
+
+            background:#2962ff30;
+
+            border-radius:50%;
+
+            filter:blur(120px);
+
+            bottom:-150px;
+            right:-150px;
         }
 
         /* NAVBAR */
-        .navbar {
-            background: rgba(13, 71, 161, 0.85);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            backdrop-filter: blur(10px);
+
+        .navbar{
+
+            width:94%;
+
+            margin:20px auto;
+
+            padding:18px 35px;
+
+            border-radius:24px;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            background:
+                    rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(18px);
+
+            border:1px solid rgba(255,255,255,0.1);
+
+            box-shadow:
+                    0 10px 35px rgba(0,0,0,0.35);
+
+            position:relative;
+            z-index:10;
         }
 
-        .logo {
-            font-size: 20px;
-            font-weight: bold;
+        .logo{
+
+            font-size:28px;
+            font-weight:700;
+
+            display:flex;
+            align-items:center;
+            gap:10px;
+
+            color:#00e5ff;
         }
 
-        /* MAIN */
-        .container {
-            text-align: center;
-            margin-top: 70px;
-            color: white;
+        .nav-right{
+
+            display:flex;
+            align-items:center;
+            gap:15px;
         }
 
-        h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
+        .secure{
+
+            font-size:14px;
+            opacity:.85;
         }
 
-        p {
-            color: #ddd;
-            font-size: 18px;
+        .nav-btn{
+
+            padding:10px 18px;
+
+            border-radius:14px;
+
+            text-decoration:none;
+
+            color:white;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #2962ff,
+                            #00bcd4
+                    );
+
+            font-size:14px;
+            font-weight:600;
+
+            transition:.3s;
+        }
+
+        .nav-btn:hover{
+
+            transform:
+                    translateY(-2px)
+                    scale(1.03);
+        }
+
+        /* HERO SECTION */
+
+        .hero{
+
+            width:90%;
+
+            margin:auto;
+
+            min-height:85vh;
+
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+
+            position:relative;
+            z-index:5;
+        }
+
+        /* LEFT */
+
+        .left{
+
+            width:55%;
+        }
+
+        .tag{
+
+            display:inline-block;
+
+            padding:10px 20px;
+
+            border-radius:50px;
+
+            margin-bottom:25px;
+
+            font-size:14px;
+            font-weight:600;
+
+            background:
+                    rgba(255,255,255,0.08);
+
+            border:1px solid rgba(255,255,255,0.1);
+
+            backdrop-filter:blur(12px);
+
+            color:#00e5ff;
+        }
+
+        .left h1{
+
+            font-size:70px;
+
+            line-height:1.1;
+
+            margin-bottom:20px;
+
+            font-weight:800;
+        }
+
+        .gradient{
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #00e5ff,
+                            #00ff99
+                    );
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .desc{
+
+            font-size:18px;
+
+            line-height:1.8;
+
+            color:#d1d5db;
+
+            max-width:650px;
         }
 
         /* BUTTONS */
-        .btn {
-            text-decoration: none;
-            padding: 12px 25px;
-            margin: 10px;
-            border-radius: 8px;
-            display: inline-block;
-            font-weight: bold;
-            transition: 0.3s;
+
+        .buttons{
+
+            margin-top:35px;
+
+            display:flex;
+            gap:20px;
         }
 
-        .login {
-            background: #00c853;
-            color: white;
+        .btn{
+
+            text-decoration:none;
+
+            padding:16px 34px;
+
+            border-radius:16px;
+
+            font-weight:700;
+
+            transition:.3s;
         }
 
-        .register {
-            background: #2962ff;
-            color: white;
+        .login{
+
+            color:#001018;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #00ff99,
+                            #00e5ff
+                    );
+
+            box-shadow:
+                    0 12px 30px rgba(0,255,153,.35);
         }
 
-        .btn:hover {
-            transform: scale(1.05);
+        .register{
+
+            color:white;
+
+            border:1px solid rgba(255,255,255,0.2);
+
+            background:
+                    rgba(255,255,255,0.06);
+
+            backdrop-filter:blur(10px);
+        }
+
+        .btn:hover{
+
+            transform:
+                    translateY(-4px)
+                    scale(1.03);
+        }
+
+        /* RIGHT SIDE CARD */
+
+        .right{
+
+            width:40%;
+
+            display:flex;
+            justify-content:center;
+        }
+
+        .premium-card{
+
+            width:400px;
+            height:240px;
+
+            border-radius:30px;
+
+            padding:28px;
+
+            position:relative;
+
+            overflow:hidden;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(255,255,255,0.18),
+                            rgba(255,255,255,0.05)
+                    );
+
+            backdrop-filter:blur(20px);
+
+            border:1px solid rgba(255,255,255,0.15);
+
+            box-shadow:
+                    0 25px 50px rgba(0,0,0,0.45);
+
+            animation:float 4s ease-in-out infinite;
+        }
+
+        @keyframes float{
+
+            0%{
+                transform:translateY(0px);
+            }
+
+            50%{
+                transform:translateY(-12px);
+            }
+
+            100%{
+                transform:translateY(0px);
+            }
+        }
+
+        .shine{
+
+            position:absolute;
+
+            width:180%;
+            height:180%;
+
+            background:
+                    linear-gradient(
+                            120deg,
+                            transparent 30%,
+                            rgba(255,255,255,0.35) 50%,
+                            transparent 70%
+                    );
+
+            top:-120%;
+            left:-120%;
+
+            transform:rotate(25deg);
+
+            animation:shine 6s linear infinite;
+        }
+
+        @keyframes shine{
+
+            100%{
+                top:120%;
+                left:120%;
+            }
+        }
+
+        .card-top{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .chip{
+
+            width:65px;
+            height:48px;
+
+            border-radius:12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #f7d774,
+                            #b8860b
+                    );
+        }
+
+        .bank-name{
+
+            text-align:right;
+
+            font-size:18px;
+
+            font-weight:700;
+
+            color:#dbeafe;
+        }
+
+        .card-number{
+
+            margin-top:50px;
+
+            font-size:28px;
+
+            letter-spacing:4px;
+
+            font-weight:500;
+        }
+
+        .card-bottom{
+
+            margin-top:35px;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:end;
+        }
+
+        .small{
+
+            font-size:12px;
+            opacity:.7;
+            margin-bottom:6px;
+        }
+
+        .holder{
+
+            font-size:18px;
+            font-weight:600;
+        }
+
+        .mastercard{
+
+            display:flex;
+            align-items:center;
+        }
+
+        .circle{
+
+            width:42px;
+            height:42px;
+
+            border-radius:50%;
+        }
+
+        .red{
+            background:#ff3b30;
+        }
+
+        .yellow{
+
+            background:#ffcc00;
+
+            margin-left:-12px;
+
+            opacity:.9;
         }
 
         /* FEATURES */
-        .features {
-            display: flex;
-            justify-content: center;
-            margin-top: 60px;
-            gap: 20px;
+
+        .features{
+
+            width:90%;
+
+            margin:40px auto 80px;
+
+            display:grid;
+
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+            gap:25px;
+
+            position:relative;
+            z-index:5;
         }
 
-        .box {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            width: 220px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+        .feature-box{
+
+            padding:30px;
+
+            border-radius:26px;
+
+            background:
+                    rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(18px);
+
+            border:1px solid rgba(255,255,255,0.1);
+
+            transition:.4s;
         }
 
-        .box h3 {
-            margin-bottom: 8px;
+        .feature-box:hover{
+
+            transform:
+                    translateY(-8px);
+
+            box-shadow:
+                    0 20px 40px rgba(0,0,0,0.35);
+        }
+
+        .icon{
+
+            font-size:42px;
+
+            margin-bottom:18px;
+        }
+
+        .feature-box h3{
+
+            margin-bottom:12px;
+
+            font-size:22px;
+        }
+
+        .feature-box p{
+
+            color:#d1d5db;
+
+            line-height:1.7;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:1000px){
+
+            .hero{
+
+                flex-direction:column;
+
+                text-align:center;
+
+                padding-top:40px;
+            }
+
+            .left,
+            .right{
+                width:100%;
+            }
+
+            .buttons{
+                justify-content:center;
+            }
+
+            .left h1{
+                font-size:48px;
+            }
+
+            .premium-card{
+                margin-top:50px;
+            }
+        }
+
+        @media(max-width:600px){
+
+            .navbar{
+                flex-direction:column;
+                gap:15px;
+            }
+
+            .left h1{
+                font-size:38px;
+            }
+
+            .premium-card{
+                width:100%;
+                height:auto;
+            }
+
+            .card-number{
+                font-size:22px;
+            }
         }
 
     </style>
+
 </head>
 
 <body>
 
-<div class="overlay">
-
 <!-- NAVBAR -->
+
 <div class="navbar">
-    <div class="logo">🏦 My Bank</div>
-    <div>Secure Digital Banking</div>
+
+    <div class="logo">
+        🏦 MyBank
+    </div>
+
+    <div class="nav-right">
+
+        <div class="secure">
+            🔒 Secure Digital Banking
+        </div>
+
+        <a href="/login" class="nav-btn">
+            Login
+        </a>
+
+    </div>
+
 </div>
 
-<!-- MAIN -->
-<div class="container">
-    <h1>Welcome to Digital Banking</h1>
-    <p>Safe • Secure • Fast Banking System</p>
+<!-- HERO -->
 
-    <a href="/login" class="btn login">Login</a>
-    <a href="/register" class="btn register">Register</a>
+<div class="hero">
 
-    <!-- FEATURES -->
-    <div class="features">
+    <!-- LEFT -->
 
-        <div class="box">
-            <h3>💰 Deposit</h3>
-            <p>Instant money deposit</p>
+    <div class="left">
+
+        <div class="tag">
+            ✨ NEXT GENERATION DIGITAL BANKING
         </div>
 
-        <div class="box">
-            <h3>🏧 Withdraw</h3>
-            <p>Fast cash withdrawal</p>
-        </div>
+        <h1>
 
-        <div class="box">
-            <h3>🔁 Transfer</h3>
-            <p>Secure instant transfer</p>
+            Smart Banking
+            For The
+            <span class="gradient">
+                Modern World
+            </span>
+
+        </h1>
+
+        <p class="desc">
+
+            Experience ultra secure, lightning fast,
+            and premium digital banking with instant
+            transfers, virtual cards, UPI payments,
+            loans, and smart financial management.
+
+        </p>
+
+        <div class="buttons">
+
+            <a href="/login" class="btn login">
+                🚀 Login
+            </a>
+
+            <a href="/register" class="btn register">
+                ✨ Create Account
+            </a>
+
         </div>
 
     </div>
+
+  
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
+
+<!-- FEATURES -->
+
+<div class="features">
+
+    <div class="feature-box">
+
+        <div class="icon">
+            💸
+        </div>
+
+        <h3>
+            Instant Transfer
+        </h3>
+
+        <p>
+            Transfer money instantly with high-end
+            encrypted banking security.
+        </p>
+
+    </div>
+
+    <div class="feature-box">
+
+        <div class="icon">
+            💳
+        </div>
+
+        <h3>
+            Virtual Cards
+        </h3>
+
+        <p>
+            Generate premium virtual cards for
+            secure online transactions.
+        </p>
+
+    </div>
+
+    <div class="feature-box">
+
+        <div class="icon">
+            📈
+        </div>
+
+        <h3>
+            Smart Finance
+        </h3>
+
+        <p>
+            Manage your balance, payments,
+            and banking activities easily.
+        </p>
+
+    </div>
 
 </div>
 
